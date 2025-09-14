@@ -38,6 +38,8 @@ show_help() {
     echo "  dev     Start development server (default)"
     echo "  build   Build the application"
     echo "  setup   Run full setup (install dependencies)"
+    echo "  github  Open repository on GitHub"
+    echo "  pr      Open pull requests"
     echo "  help    Show this help message"
     echo ""
     echo "Examples:"
@@ -45,6 +47,8 @@ show_help() {
     echo "  opcode dev    # Start development server"
     echo "  opcode build  # Build the application"
     echo "  opcode setup  # Run setup"
+    echo "  opcode github # Open GitHub repo"
+    echo "  opcode pr     # View pull requests"
 }
 
 # Handle commands
@@ -66,6 +70,14 @@ case "${1:-dev}" in
             bun install
             echo "✅ Setup complete!"
         fi
+        ;;
+    "github"|"gh")
+        echo "🌐 Opening GitHub repository..."
+        gh browse
+        ;;
+    "pr")
+        echo "📝 Opening pull requests..."
+        gh pr list --web
         ;;
     "help"|"-h"|"--help")
         show_help
