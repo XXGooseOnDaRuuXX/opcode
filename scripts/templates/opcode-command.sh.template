@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Global Opcode command script
+# Generated from template - customize as needed
+# Usage: opcode [command]
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Change to the opcode directory
+cd "$SCRIPT_DIR"
+
+# If we're in a symlinked location, find the actual project directory
+if [ ! -f "package.json" ]; then
+    # Try to find the opcode project directory
+    OPCODE_DIR="{{OPCODE_PROJECT_PATH}}"
+    if [ -n "$OPCODE_DIR" ] && [ -f "$OPCODE_DIR/package.json" ]; then
+        cd "$OPCODE_DIR"
+    fi
+fi
+
+# Set up environment
+export PATH="{{CARGO_PATH}}:{{BUN_PATH}}:$PATH"
+
+# Check if we're in the right directory
+if [ ! -f "package.json" ]; then
+    echo "❌ Error: Could not find opcode project directory"
+    exit 1
+fi
+
+# Function to show help
+show_help() {
+    echo "🚀 Opcode - GUI for Claude Code"
+    echo ""
+    echo "Usage: opcode [command]"
+    echo ""
+    echo "Commands:"
+    echo "  dev     Start development server (default)"
+    echo "  build   Build the application"
+    echo "  setup   Run full setup (install dependencies)"
+    echo "  help    Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  opcode        # Start development server"
+    echo "  opcode dev    # Start development server"
+    echo "  opcode build  # Build the application"
+    echo "  opcode setup  # Run setup"
+}
+
+# Handle commands
+case "${1:-dev}" in
+    "dev")
+        echo "🚀 Starting Opcode development server..."
+        {{PACKAGE_MANAGER}} run tauri dev
+        ;;
+    "build")
+        echo "🔨 Building Opcode..."
+        {{PACKAGE_MANAGER}} run tauri build
+        ;;
+    "setup")
+        echo "⚙️  Running Opcode setup..."
+        if [ -f "./scripts/setup.sh" ]; then
+            ./scripts/setup.sh
+        else
+            echo "Installing dependencies..."
+            {{PACKAGE_MANAGER}} install
+            echo "✅ Setup complete!"
+        fi
+        ;;
+    "help"|"-h"|"--help")
+        show_help
+        ;;
+    *)
+        echo "❌ Unknown command: $1"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac

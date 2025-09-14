@@ -37,3 +37,8 @@ CLAUDE.md
 .claude/
 
 .env
+
+# User-specific generated scripts
+scripts/generated/
+scripts/user/
+*.local.sh
